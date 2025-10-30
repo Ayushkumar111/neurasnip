@@ -1,0 +1,74 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Environment Variables (contains sensitive paths)
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+data/logs/*.log
+data/logs/
+
+# Data directories (images and vector store can be large)
+data/images/*
+!data/images/.gitkeep
+data/vector_store/*
+!data/vector_store/.gitkeep
+
+# Model cache (CLIP downloads models here)
+.cache/
+*.pth
+*.pt
+*.bin
+*.onnx
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+test_*.png
+test_*.jpg

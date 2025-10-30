@@ -1,0 +1,15 @@
+streamlit
+faiss-cpu
+pytesseract
+
+numpy
+opencv-python
+Pillow
+requests
+loguru
+tqdm
+watchdog
+python-dotenv
+torch==2.9.0
+torchvision==0.24.0
+git+https://github.com/openai/CLIP.git

@@ -1,0 +1,4 @@
+
+type nul > data\images\.gitkeep
+type nul > data\vector_store\.gitkeep
+type nul > data\logs\.gitkeep
