@@ -23,12 +23,13 @@ class ImageIndexer:
         db_path: str = "data/vector_store/images.index",
         batch_size: int = 32,
         skip_duplicates: bool = True,
+        progress_callback = None,  # ✅ NEW: For Streamlit progress
     ):
         
         self.images_folder = images_folder
-        
         self.batch_size = batch_size
         self.skip_duplicates = skip_duplicates
+        self.progress_callback = progress_callback  # ✅ NEW: Store callback
 
         logger.info("Initializing ImageIndexer...")
 
@@ -242,29 +243,62 @@ class ImageIndexer:
             logger.warning(f"No images found in {self.images_folder}")
             return self.stats
         
-        logger.info(f"📊 Found {len(image_files)} images to process")
+        total_images = len(image_files)
+        logger.info(f"📊 Found {total_images} images to process")
+        
+        # ✅ NEW: Report initial progress
+        if self.progress_callback:
+            self.progress_callback(0, total_images, "Starting indexing...")
         
         # process images
         if use_batch and len(image_files) > self.batch_size:
-            
             logger.info(f"Using batch processing (batch_size={self.batch_size})")
             
             # split into batches
-            # process 32 images at a time for efficiency
-            for i in tqdm(range(0, len(image_files), self.batch_size), desc="Indexing batches"):
+            batches_total = (len(image_files) + self.batch_size - 1) // self.batch_size
+            
+            for batch_idx, i in enumerate(range(0, len(image_files), self.batch_size)):
                 batch = image_files[i:i + self.batch_size]
                 self.index_batch(batch)
+                
+                # ✅ NEW: Report progress after each batch
+                processed = min(i + self.batch_size, total_images)
+                if self.progress_callback:
+                    self.progress_callback(
+                        processed, 
+                        total_images,
+                        f"Processing batch {batch_idx + 1}/{batches_total}"
+                    )
         
         else:
             # single image processing
             logger.info("Processing images one by one...")
             
-            for img_path in tqdm(image_files, desc="Indexing images"):
+            for idx, img_path in enumerate(image_files):
                 self.index_single_image(img_path)
+                
+                # ✅ NEW: Report progress after each image
+                if self.progress_callback and (idx + 1) % 5 == 0:  # Update every 5 images
+                    self.progress_callback(
+                        idx + 1,
+                        total_images,
+                        f"Processed {idx + 1}/{total_images} images"
+                    )
         
-       
+        # ✅ NEW: Report completion
+        if self.progress_callback:
+            self.progress_callback(total_images, total_images, "Saving database...")
+        
         logger.info("💾 Saving database...")
         self.database.save()
+        
+        # ✅ NEW: Report final completion
+        if self.progress_callback:
+            self.progress_callback(
+                total_images, 
+                total_images, 
+                f"✅ Complete! Indexed {self.stats['new_indexed']} new images"
+            )
         
         # Print summary
         logger.info("="*60)

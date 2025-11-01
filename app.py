@@ -241,72 +241,115 @@ def display_sidebar():
         
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # ===== NEW: DATABASE MANAGEMENT =====
+        # ===== DATABASE MANAGEMENT WITH PROGRESS =====
         st.markdown("### 🔄 Database Management")
         
         col1, col2 = st.columns(2)
         
         with col1:
             if st.button("🔄 Refresh", use_container_width=True, help="Scan for new images"):
-                with st.spinner("🔄 Scanning for new images..."):
+                # ✅ NEW: Create progress containers
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+                
+                try:
+                    # ✅ NEW: Define progress callback
+                    def update_progress(current, total, message):
+                        """Update Streamlit progress bar"""
+                        progress = current / total if total > 0 else 0
+                        progress_bar.progress(progress)
+                        status_text.text(message)
+                    
+                    # Create indexer with progress callback
+                    indexer = ImageIndexer(
+                        images_folder=r"D:\IMAGES",
+                        db_path="data/vector_store/images.index",
+                        skip_duplicates=True,
+                        progress_callback=update_progress  # ✅ Pass callback!
+                    )
+                    
+                    # Index with progress updates
+                    result = indexer.index_folder()
+                    
+                    # Clear progress UI
+                    progress_bar.empty()
+                    status_text.empty()
+                    
+                    # Reload search engine
+                    st.session_state.search_engine = SearchEngine(
+                        db_path="data/vector_store/images.index"
+                    )
+                    
+                    # Show results
+                    if result['new_indexed'] > 0:
+                        st.success(f"✅ Added {result['new_indexed']} new images!")
+                    else:
+                        st.info("ℹ️ No new images found")
+                    
+                    # Show stats
+                    with st.expander("📊 Details"):
+                        st.write(f"**Total processed:** {result['total_processed']}")
+                        st.write(f"**New indexed:** {result['new_indexed']}")
+                        st.write(f"**Skipped:** {result['duplicates_skipped']}")
+                        st.write(f"**Errors:** {result['errors']}")
+                    
+                    # Force refresh
+                    st.rerun()
+                    
+                except Exception as e:
+                    progress_bar.empty()
+                    status_text.empty()
+                    st.error(f"❌ Error: {e}")
+        
+        with col2:
+            if st.button("📊 Reindex All", use_container_width=True, help="Rebuild entire database"):
+                # ✅ NEW: Add progress for reindex too
+                if st.session_state.get('confirm_reindex', False):
+                    progress_bar = st.progress(0)
+                    status_text = st.empty()
+                    
                     try:
-                        # Run indexer
+                        # Progress callback
+                        def update_progress(current, total, message):
+                            progress = current / total if total > 0 else 0
+                            progress_bar.progress(progress)
+                            status_text.text(message)
+                        
+                        # Delete old index
+                        import os
+                        status_text.text("🗑️ Deleting old database...")
+                        if os.path.exists("data/vector_store/images.index"):
+                            os.remove("data/vector_store/images.index")
+                            os.remove("data/vector_store/images_metadata.pkl")
+                        
+                        # Reindex everything
                         indexer = ImageIndexer(
-                            images_folder="D:/IMAGES",
+                            images_folder=r"D:\IMAGES",
                             db_path="data/vector_store/images.index",
-                            skip_duplicates=True
+                            skip_duplicates=False,
+                            progress_callback=update_progress  # ✅ Pass callback!
                         )
                         
                         result = indexer.index_folder()
                         
-                        # Reload search engine
+                        # Clear progress UI
+                        progress_bar.empty()
+                        status_text.empty()
+                        
+                        # Reload engine
                         st.session_state.search_engine = SearchEngine(
                             db_path="data/vector_store/images.index"
                         )
                         
-                        # Show results
-                        if result['new_indexed'] > 0:
-                            st.success(f"✅ Added {result['new_indexed']} new images!")
-                        else:
-                            st.info("ℹ️ No new images found")
+                        st.success(f"✅ Reindexed {result['new_indexed']} images!")
+                        st.session_state.confirm_reindex = False
                         
-                        # Force refresh
                         st.rerun()
                         
                     except Exception as e:
+                        progress_bar.empty()
+                        status_text.empty()
                         st.error(f"❌ Error: {e}")
-        
-        with col2:
-            if st.button("📊 Reindex All", use_container_width=True, help="Rebuild entire database"):
-                if st.session_state.get('confirm_reindex', False):
-                    with st.spinner("🔄 Rebuilding database..."):
-                        try:
-                            # Delete old index
-                            import os
-                            if os.path.exists("data/vector_store/images.index"):
-                                os.remove("data/vector_store/images.index")
-                                os.remove("data/vector_store/images_metadata.pkl")
-                            
-                            # Reindex everything
-                            indexer = ImageIndexer(
-                                images_folder="D:/IMAGES",
-                                db_path="data/vector_store/images.index",
-                                skip_duplicates=False
-                            )
-                            
-                            result = indexer.index_folder()
-                            
-                            # Reload engine
-                            st.session_state.search_engine = SearchEngine(
-                                db_path="data/vector_store/images.index"
-                            )
-                            
-                            st.success(f"✅ Reindexed {result['new_indexed']} images!")
-                            st.session_state.confirm_reindex = False
-                            st.rerun()
-                            
-                        except Exception as e:
-                            st.error(f"❌ Error: {e}")
                 else:
                     st.warning("⚠️ Click again to confirm")
                     st.session_state.confirm_reindex = True
