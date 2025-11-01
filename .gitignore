@@ -73,5 +73,3 @@ htmlcov/
 test_*.png
 test_*.jpg
 
-#docs
-docs/images/*
