@@ -1,6 +1,8 @@
-# 🔍 NeuraCnip - Semantic Image Search Engine
+# 🔍 NeuraSnip - Semantic Image Search Engine
 
 <div align="center">
+
+![NeuraSnip Banner](docs/images/banner.png)
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![CLIP](https://img.shields.io/badge/Model-CLIP-orange.svg)
@@ -21,15 +23,15 @@ NeuraSnip is a **semantic image search engine** that understands what you're loo
 
 ### 🌟 Key Features
 
-- 🔍 **Semantic Search** - Search using natural language descriptions
-- 🖼️ **Image-to-Image Search** - Upload an image to find similar ones
-- 🎯 **Hybrid Search** - Combine text + image for ultra-precise results
-- 🔤 **OCR Integration** - Search text within images
-- 📊 **Beautiful UI** - Clean, modern Streamlit interface
-- ⚡ **Fast Indexing** - Batch processing with progress tracking
-- 💾 **Vector Database** - Efficient FAISS-based storage
-- 🎨 **Smart Filters** - Color detection and filtering
-- 🎲 **Random Explorer** - Discover forgotten images
+-  **Semantic Search** - Search using natural language descriptions
+-  **Image-to-Image Search** - Upload an image to find similar ones
+-  **Hybrid Search** - Combine text + image for ultra-precise results
+-  **OCR Integration** - Search text within images
+-  **Beautiful UI** - Clean, modern Streamlit interface
+-  **Fast Indexing** - Batch processing with progress tracking
+-  **Vector Database** - Efficient FAISS-based storage
+-  **Smart Filters** - Color detection and filtering
+-  **Random Explorer** - Discover forgotten images
 
 ---
 
@@ -96,6 +98,11 @@ streamlit run app.py
 
 Search using natural language descriptions:
 
+<div align="center">
+  <img src="docs/images/text-search.png" alt="Text Search Interface" width="800"/>
+  <p><em>Natural language text search with relevance scores</em></p>
+</div>
+
 ```python
 # Example queries:
 "sunset on beach"
@@ -110,6 +117,11 @@ Search using natural language descriptions:
 
 Upload a reference image to find similar ones:
 
+<div align="center">
+  <img src="docs/images/image-search.png" alt="Image Search Interface" width="800"/>
+  <p><em>Upload any image to find visually similar matches</em></p>
+</div>
+
 ```python
 # Use cases:
 - Find duplicates
@@ -122,16 +134,26 @@ Upload a reference image to find similar ones:
 
 Combine text description + reference image:
 
+<div align="center">
+  <img src="docs/images/hybrid-search.png" alt="Hybrid Search Interface" width="800"/>
+  <p><em>Adjust text/image weights for precise control over search results</em></p>
+</div>
+
 ```python
 # Example:
 Text: "person at landmark"
 Image: [upload photo of Taj Mahal]
-Result: All photos of people at Taj Mahal 🎯
+Result: All photos of people at Taj Mahal 
 ```
 
 ### 4️⃣ Random Explorer
 
 Discover forgotten images with one click:
+
+<div align="center">
+  <img src="docs/images/random-search.png" alt="Random Explorer" width="800"/>
+  <p><em>Rediscover your photo collection with random sampling</em></p>
+</div>
 
 ```python
 # Perfect for:
@@ -263,7 +285,7 @@ text = pytesseract.image_to_string(img, lang='eng')
 
 ---
 
-## 📊 Performance
+##  Performance
 
 ### Indexing Speed
 
@@ -281,9 +303,46 @@ text = pytesseract.image_to_string(img, lang='eng')
 
 *Tested on: Intel i7, 16GB RAM, No GPU*
 
+
+##  Dashboard & Statistics
+
+Track your image collection and search performance:
+
+
+<div align="center">
+  <img src="docs/images/dashboard.png" alt="Dashboard Statistics" width="800"/>
+  <p><em>Comprehensive analytics about your image collection</em></p>
+</div>
+
+### Features:
+-  Total images indexed
+-  Search history
+-  Database size
+-  Color distribution
+-  Performance metrics
+
 ---
 
-## 🎨 Features Deep Dive
+
+## 🔄 Database Management
+
+### Real-time Progress Tracking
+
+
+<div align="center">
+  <img src="docs/images/refresh-stats.png" alt="Indexing Progress" width="700"/>
+  <p><em>Real-time progress tracking during image indexing</em></p>
+</div>
+
+### Features:
+-  **Refresh Database** - Scan for new images
+-  **Reindex All** - Rebuild entire database
+-  **Live Statistics** - See progress in real-time
+-  **Batch Processing** - Fast indexing with progress bars
+
+---
+
+##  Features Deep Dive
 
 ### 1. Semantic Understanding
 
@@ -328,7 +387,7 @@ Results: All images containing cats, even if
 
 ---
 
-## 🛠️ Advanced Usage
+##  Advanced Usage
 
 ### Command Line Indexing
 
@@ -372,7 +431,7 @@ print(f"Total images: {stats['total_images']}")
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Issue: "No module named 'clip'"
 
@@ -408,7 +467,7 @@ python -m src.indexer.image_indexer
 ### Issue: "Images not appearing in search"
 
 ```bash
-# Click "🔄 Refresh" button in Streamlit sidebar
+# Click " Refresh" button in Streamlit sidebar
 # Or reindex from command line
 python -m src.indexer.image_indexer
 ```
@@ -443,13 +502,13 @@ pip install -r requirements-dev.txt
 ```
 ---
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License .
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **OpenAI CLIP** - For the amazing vision-language model
 - **FAISS** - For efficient vector similarity search
@@ -459,15 +518,13 @@ This project is licensed under the MIT License .
 
 ---
 
-## 📧 Contact
+##  Contact
 
 **Ayush Kumar** - (https://www.linkedin.com/in/mr-ayush-kumar-004/)
 
 Project Link: [https://github.com/Ayushkumar111/neurasnip](https://github.com/Ayushkumar111/neurasnip)
 
 ---
-
-## ⭐ Star History
 
 If you find this project useful, please consider giving it a star! ⭐
 
