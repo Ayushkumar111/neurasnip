@@ -19,8 +19,8 @@ class ImageIndexer:
 
     def __init__(
         self,
-        images_folder: str,
-        db_path: str,
+        images_folder: str = "D:/IMAGES",
+        db_path: str = "data/vector_store/images.index",
         batch_size: int = 32,
         skip_duplicates: bool = True,
     ):
@@ -347,3 +347,46 @@ def index_images(
     """
     indexer = ImageIndexer(images_folder, db_path)
     return indexer.index_folder()
+
+
+
+if __name__ == "__main__":
+    """
+    Run indexer from command line
+    Usage: python -m src.indexer.image_indexer
+    """
+    import sys
+    
+    logger.info("="*60)
+    logger.info("🚀 Starting Image Indexing")
+    logger.info("="*60)
+    
+    try:
+        # Create indexer with default paths
+        indexer = ImageIndexer()
+        
+        # Index all images
+        result = indexer.index_folder()
+        
+        # Print summary
+        logger.info("="*60)
+        logger.info("✅ Indexing Complete!")
+        logger.info("="*60)
+        logger.success(f"📊 New images indexed: {result['new_indexed']}")
+        logger.success(f"⏭️  Skipped (duplicates): {result['duplicates_skipped']}")
+        logger.success(f"❌ Failed: {result['errors']}")
+        
+        logger.info("="*60)
+        
+        # Exit with appropriate code
+        sys.exit(0 if result['errors'] == 0 else 1)
+        
+    except KeyboardInterrupt:
+        logger.warning("\n⚠️  Indexing interrupted by user")
+        sys.exit(1)
+        
+    except Exception as e:
+        logger.error(f"❌ Fatal error: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        sys.exit(1)

@@ -2,7 +2,7 @@
 This will handle image and text embedding generation using open ai clip models
 """
 
-import torch
+import torch 
 import clip
 import numpy as np
 from PIL import Image
