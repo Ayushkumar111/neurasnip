@@ -302,7 +302,7 @@ class VectorDatabase:
         self.index = faiss.IndexFlatIP(self.dimension)
         self.metadata = []
         self.next_id = 0
-        logger.warning("🗑️  Database cleared!")
+        logger.warning("  Database cleared!")
 
 
     def is_empty(self) -> bool:

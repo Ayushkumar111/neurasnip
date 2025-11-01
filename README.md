@@ -9,7 +9,7 @@
 
 **Search your images using natural language, powered by OpenAI's CLIP model**
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Architecture](#-architecture) • [Demo](#-demo)
+
 
 </div>
 

@@ -72,7 +72,7 @@ class SearchEngine:
         min_similarity: float = 0.0
     ) -> List[dict]:
         """
-        🔍 Search using natural language query
+         search using natural language query usefull for images which have higher text content
         
         Args:
             query: Natural language text (e.g., "show me receipts from coffee shops")
@@ -124,7 +124,7 @@ class SearchEngine:
         min_similarity: float = 0.0
     ) -> List[dict]:
         """
-        🖼️ Search using an image (find similar images)
+         search using an image use to find similar images 
         
         Args:
             image_path: Path to query image
@@ -134,7 +134,7 @@ class SearchEngine:
         Returns:
             List of similar images
         """
-        logger.info(f"🖼️ Image Query: {image_path}")
+        logger.info(f" Image Query: {image_path}")
         
         try:
             # Load and process query image
@@ -156,7 +156,7 @@ class SearchEngine:
                 if r.get('path') != image_path and r['similarity'] >= min_similarity
             ][:top_k]
             
-            logger.info(f"✅ Found {len(filtered_results)} similar images")
+            logger.info(f" Found {len(filtered_results)} similar images")
             
             # Add ranking
             for i, result in enumerate(filtered_results, 1):
@@ -165,7 +165,7 @@ class SearchEngine:
             return filtered_results
             
         except Exception as e:
-            logger.error(f"❌ Image search failed: {e}")
+            logger.error(f" Image search failed: {e}")
             return []
     
     
@@ -178,7 +178,7 @@ class SearchEngine:
         image_weight: float = 0.3
     ) -> List[dict]:
         """
-        🎯 Hybrid search (combine text + image query)
+         Hybrid search (combine text + image query) we have slider to adjust weightage of image and text query too
         
         Args:
             query_text: Text query
@@ -190,7 +190,7 @@ class SearchEngine:
         Returns:
             Combined search results
         """
-        logger.info(f"🎯 Hybrid Query: text='{query_text}', image={query_image}")
+        logger.info(f" Hybrid Query: text='{query_text}', image={query_image}")
         
         try:
             # Generate text embedding
@@ -219,12 +219,12 @@ class SearchEngine:
             # Search
             results = self.database.search(query_vector, top_k=top_k)
             
-            logger.info(f"✅ Found {len(results)} hybrid results")
+            logger.info(f" Found {len(results)} hybrid results")
             
             return results
             
         except Exception as e:
-            logger.error(f"❌ Hybrid search failed: {e}")
+            logger.error(f" Hybrid search failed: {e}")
             return []
     
     
@@ -234,7 +234,7 @@ class SearchEngine:
         top_k: int = 10
     ) -> List[dict]:
         """
-        📝 Search by OCR text content
+         Search by OCR text content this is helpfull for those images which are text heavy
         
         Args:
             ocr_text: Text to search for in OCR content
@@ -243,7 +243,7 @@ class SearchEngine:
         Returns:
             Images containing similar text
         """
-        logger.info(f"📝 OCR Search: '{ocr_text[:50]}...'")
+        logger.info(f" OCR Search: '{ocr_text[:50]}...'")
         
         # Use text embedding search
         return self.search_by_text(ocr_text, top_k=top_k)
@@ -251,7 +251,7 @@ class SearchEngine:
     
     def get_random_samples(self, count: int = 5) -> List[dict]:
         """
-        🎲 Get random samples from database (for UI exploration)
+          you will get random samples from database just for ui exploration
         
         Args:
             count: Number of random samples
@@ -277,7 +277,7 @@ class SearchEngine:
                     meta['rank'] = len(results) + 1
                     results.append(meta)
             
-            logger.info(f"🎲 Retrieved {len(results)} random samples")
+            logger.info(f" Retrieved {len(results)} random samples")
             return results
             
         except Exception as e:
@@ -287,7 +287,7 @@ class SearchEngine:
     
     def get_statistics(self) -> dict:
         """
-        📊 Get search engine statistics
+         Get search engine statistics
         
         Returns:
             Statistics dictionary
@@ -309,7 +309,7 @@ class SearchEngine:
         include_thumbnails: bool = False
     ) -> List[dict]:
         """
-        📋 Format results for display (clean up metadata)
+         Format results for display (clean up metadata)
         
         Args:
             results: Raw search results
@@ -364,7 +364,7 @@ class SearchEngine:
         Returns:
             Filtered results
         """
-        logger.info(f"🔍 Query: '{query}', Color filter: {color_filter}")
+        logger.info(f" Query: '{query}', Color filter: {color_filter}")
         
         # Get initial results (more than needed)
         results = self.search_by_text(
@@ -377,7 +377,7 @@ class SearchEngine:
             return results[:top_k]
         
         # Filter by color
-        logger.info(f"🎨 Filtering for color: {color_filter}")
+        logger.info(f" Filtering for color: {color_filter}")
         filtered_results = []
         
         for result in results:
@@ -387,7 +387,7 @@ class SearchEngine:
                 if len(filtered_results) >= top_k:
                     break
         
-        logger.info(f"✅ Found {len(filtered_results)} results with {color_filter}")
+        logger.info(f" Found {len(filtered_results)} results with {color_filter}")
         
         return filtered_results
 
@@ -398,7 +398,7 @@ def quick_search(
     top_k: int = 5
 ) -> List[dict]:
     """
-    🚀 Quick utility to search with one line
+     Quick utility to search with one line
     
     Example:
         results = quick_search("show me receipts")
@@ -410,29 +410,29 @@ def quick_search(
 
 def search_and_print(query: str, top_k: int = 5):
     """
-    🖨️ Search and print results (for testing)
+     Search and print results (for testing)
     
     Example:
         search_and_print("coffee shop receipts")
     """
     results = quick_search(query, top_k=top_k)
     
-    print(f"\n🔍 Query: '{query}'")
+    print(f"\n Query: '{query}'")
     print("="*60)
     
     if not results:
-        print("❌ No results found")
+        print(" No results found")
         return
     
     for r in results:
         print(f"\n{r['rank']}. {r['filename']}")
-        print(f"   📊 Similarity: {r['similarity']:.4f}")
-        print(f"   📍 Path: {r['path']}")
+        print(f"    Similarity: {r['similarity']:.4f}")
+        print(f"    Path: {r['path']}")
         if r.get('ocr_text'):
             preview = r['ocr_text'][:100]
-            print(f"   📝 OCR: {preview}...")
+            print(f"    OCR: {preview}...")
         print("-"*60)
     
-    print(f"\n✅ Found {len(results)} results")
+    print(f"\n Found {len(results)} results")
 
 

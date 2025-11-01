@@ -23,13 +23,13 @@ class ImageIndexer:
         db_path: str = "data/vector_store/images.index",
         batch_size: int = 32,
         skip_duplicates: bool = True,
-        progress_callback = None,  # ✅ NEW: For Streamlit progress
+        progress_callback = None,  # streamlit progress callback
     ):
         
         self.images_folder = images_folder
         self.batch_size = batch_size
         self.skip_duplicates = skip_duplicates
-        self.progress_callback = progress_callback  # ✅ NEW: Store callback
+        self.progress_callback = progress_callback  # call back to track progress in ui 
 
         logger.info("Initializing ImageIndexer...")
 
@@ -50,7 +50,7 @@ class ImageIndexer:
             'errors': 0
         }
         
-        logger.info(f"🚀 Indexer initialized | Batch size: {batch_size}")
+        logger.info(f" Indexer initialized | Batch size: {batch_size}")
 
 
     def get_image_files(self)-> List[str]:
@@ -92,8 +92,7 @@ class ImageIndexer:
             True if successfully indexed, False otherwise
         """
         try:
-            # process image (Module 1)
-            # why: Extract OCR text, preprocess image
+            # process image we will use our module  1 here 
             result = self.processor.process_image_full(image_path)
             
             if result is None:
@@ -107,8 +106,7 @@ class ImageIndexer:
                 self.stats['duplicates_skipped'] += 1
                 return False
             
-            # generate hybrid embedding 
-            # why: combine visual features + OCR text
+            #hybrid embeddings gg
             embedding = self.embedder.generate_hybrid_embedding(
                 result['image'],
                 result['ocr_text']
@@ -125,7 +123,7 @@ class ImageIndexer:
             
             self.database.insert(embedding, metadata)
             
-            # update statistics
+            # update statistics stats are very much needed atp
             self.stats['new_indexed'] += 1
             self.stats['total_processed'] += 1
             
@@ -142,7 +140,7 @@ class ImageIndexer:
 
     def index_batch(self, image_paths: List[str]) -> int:
         """
-        Process and index multiple images efficiently
+        Process and index multiple images efficiently in a batch 
         
         Args:
             image_paths: List of image file paths
@@ -163,7 +161,7 @@ class ImageIndexer:
         for img_path in image_paths:
             result = self.processor.process_image_full(img_path)
             if result:
-                # check duplicates
+                # check duplicates really important man using hash to avoid reindexing
                 if self.skip_duplicates and self.is_already_indexed(result['hash']):
                     self.stats['duplicates_skipped'] += 1
                     logger.debug(f"⏭  Skipping: {result['filename']}")
@@ -246,7 +244,7 @@ class ImageIndexer:
         total_images = len(image_files)
         logger.info(f"📊 Found {total_images} images to process")
         
-        # ✅ NEW: Report initial progress
+        
         if self.progress_callback:
             self.progress_callback(0, total_images, "Starting indexing...")
         
@@ -254,14 +252,14 @@ class ImageIndexer:
         if use_batch and len(image_files) > self.batch_size:
             logger.info(f"Using batch processing (batch_size={self.batch_size})")
             
-            # split into batches
+            # split into batches goated 
             batches_total = (len(image_files) + self.batch_size - 1) // self.batch_size
             
             for batch_idx, i in enumerate(range(0, len(image_files), self.batch_size)):
                 batch = image_files[i:i + self.batch_size]
                 self.index_batch(batch)
                 
-                # ✅ NEW: Report progress after each batch
+                # report after processing each batch
                 processed = min(i + self.batch_size, total_images)
                 if self.progress_callback:
                     self.progress_callback(
@@ -277,30 +275,30 @@ class ImageIndexer:
             for idx, img_path in enumerate(image_files):
                 self.index_single_image(img_path)
                 
-                # ✅ NEW: Report progress after each image
-                if self.progress_callback and (idx + 1) % 5 == 0:  # Update every 5 images
+                
+                if self.progress_callback and (idx + 1) % 5 == 0: 
                     self.progress_callback(
                         idx + 1,
                         total_images,
                         f"Processed {idx + 1}/{total_images} images"
                     )
         
-        # ✅ NEW: Report completion
+        # ✅report saving progress
         if self.progress_callback:
             self.progress_callback(total_images, total_images, "Saving database...")
         
         logger.info("💾 Saving database...")
         self.database.save()
         
-        # ✅ NEW: Report final completion
+        # this is final completion update 
         if self.progress_callback:
             self.progress_callback(
                 total_images, 
                 total_images, 
-                f"✅ Complete! Indexed {self.stats['new_indexed']} new images"
+                f" Complete! Indexed {self.stats['new_indexed']} new images"
             )
         
-        # Print summary
+        # summary to be printed 
         logger.info("="*60)
         logger.info(" Indexing complete!")
         logger.info(f" Statistics:")
@@ -351,7 +349,7 @@ class ImageIndexer:
             logger.warning("⚠️  Clearing existing database...")
             self.database.clear()
         
-        logger.info("🔄 Rebuilding index from scratch...")
+        logger.info(" Rebuilding index from scratch...")
         self.index_folder()
     
     
@@ -364,7 +362,7 @@ class ImageIndexer:
         }
     
 
-    # Utility function for quick access
+    #  this is just a utility function for quick access
 def index_images(
     images_folder: str,
     db_path: str = "data/vector_store/images.index"
@@ -392,35 +390,35 @@ if __name__ == "__main__":
     import sys
     
     logger.info("="*60)
-    logger.info("🚀 Starting Image Indexing")
+    logger.info(" Starting Image Indexing")
     logger.info("="*60)
     
     try:
-        # Create indexer with default paths
+        # creating indexer instance
         indexer = ImageIndexer()
         
-        # Index all images
+        # indexing all the images
         result = indexer.index_folder()
         
-        # Print summary
+        #sumarry
         logger.info("="*60)
         logger.info("✅ Indexing Complete!")
         logger.info("="*60)
-        logger.success(f"📊 New images indexed: {result['new_indexed']}")
-        logger.success(f"⏭️  Skipped (duplicates): {result['duplicates_skipped']}")
-        logger.success(f"❌ Failed: {result['errors']}")
+        logger.success(f" New images indexed: {result['new_indexed']}")
+        logger.success(f"⏭  Skipped (duplicates): {result['duplicates_skipped']}")
+        logger.success(f" Failed: {result['errors']}")
         
         logger.info("="*60)
         
-        # Exit with appropriate code
+        # exiting  with appropriate code
         sys.exit(0 if result['errors'] == 0 else 1)
         
     except KeyboardInterrupt:
-        logger.warning("\n⚠️  Indexing interrupted by user")
+        logger.warning("\n  Indexing interrupted by user")
         sys.exit(1)
         
     except Exception as e:
-        logger.error(f"❌ Fatal error: {e}")
+        logger.error(f" Fatal error: {e}")
         import traceback
         logger.error(traceback.format_exc())
         sys.exit(1)
