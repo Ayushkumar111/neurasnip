@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![NeuraSnip Banner](docs/images/banner.png)
+![NeuraSnip Banner](docs/images/BANNER.png)
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![CLIP](https://img.shields.io/badge/Model-CLIP-orange.svg)
