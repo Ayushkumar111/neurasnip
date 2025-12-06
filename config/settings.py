@@ -20,4 +20,3 @@ TOP_K_RESULTS = 10
 os.makedirs(IMAGES_FOLDER, exist_ok=True)
 os.makedirs(VECTOR_STORE_PATH, exist_ok=True)
 os.makedirs(LOGS_PATH, exist_ok=True)
-//working fine  as of now 
